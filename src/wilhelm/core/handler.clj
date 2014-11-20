@@ -17,9 +17,13 @@
         limit (or (:limit options) default-limit)]
     (response (movies/now-playing (Integer/parseInt offset) (Integer/parseInt limit)))))
 
+(defn get-cast [movieid]
+  (response (movies/cast movieid)))
+
 (defroutes app-routes
   (GET "/" [] "<a href='https://www.youtube.com/watch?v=cdbYsoEasio'>Wilhelm</a>")
   (GET "/movies/now-playing" {params :query-params} (get-now-playing params))
+  (GET "/cast/:moveid" [movieid] (get-cast movieid))
   (route/files "/app")
   (route/not-found "Not Found"))
 
