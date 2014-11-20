@@ -12,7 +12,7 @@
 
 (defroutes app-routes
   (GET "/" [] "<a href='https://www.youtube.com/watch?v=cdbYsoEasio'>Wilhelm</a>")
-  (GET "/movies/now-playing" [limit offset] (get-now-playing {:limit limit :offset offset}))
+  (GET "/movies/now-playing" {params :query-params} (get-now-playing params))
   (route/files "/app")
   (route/not-found "Not Found"))
 

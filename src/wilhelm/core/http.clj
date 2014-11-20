@@ -1,21 +1,25 @@
 (ns wilhelm.core.http
-  (:require [clj-http.client :as client]))
+  (:require [clj-http.client :as client])
+  (:require [cheshire.core :refer :all]))
+
+(defn from-json-to-edn [json-string]
+  (parse-string json-string))
 
 (defn get [url options]
   (client/get url options))
 
 (defn get-resp-body [resp]
-  (:body (resp)))
+  (:body resp))
 
 (defn get-resp-code [resp]
   (:status (resp)))
 
-(defn get-simple [url options]
-  (get-resp-body (get url options)))
+(defn get-simple [url params]
+  (get-resp-body (get url {:query-params params})))
 
-(defn get-simple-json [url options]
+(defn get-simple-json [url params]
   (->
-    (get-simple url options)
+    (get-simple url params)
     (from-json-to-edn)))
 
 (defn iserror? [resp]

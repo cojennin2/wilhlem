@@ -17,7 +17,7 @@
   (if (>= offset maximum-offset)
     maximum-offset
     (let [pages (/ offset default-number-of-results)]
-      (if (<= pages 0)
+      (if (<= pages 1)
         default-page-start
         pages))))
 
@@ -26,8 +26,10 @@
 ; can just take an arbitrary number of items from it
 ; (and behind the scenes we'll recursively call the api and
 ; add to the list by incrementing pages).
-(defn get-paged-results
-  ([page endpoint] (cons (http/get-simple-json (str url endpoint) {:query-params page}) (lazy-seq (get-paged-results (+ page 1))))))
+(defn get-paged-results [page endpoint]
+  (cons
+   (get (http/get-simple-json (str url endpoint) {:page page :api_key apikey}) "results")
+   (lazy-seq (get-paged-results (+ page 1) endpoint))))
 
 ; Fetch results for movies that are now_playing in a given area
 ; This api is paged, but with a nice lazy list we can just visualize
