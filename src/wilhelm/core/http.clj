@@ -2,6 +2,10 @@
   (:require [clj-http.client :as client])
   (:require [cheshire.core :refer :all]))
 
+; clj-http has some support for deserializing into
+; json, clojure data, etc. Ended up running into
+; issues with it so opting for chesire for the time
+; being. Can revisit later.
 (defn from-json-to-edn [json-string]
   (parse-string json-string))
 

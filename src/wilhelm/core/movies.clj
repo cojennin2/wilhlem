@@ -26,7 +26,7 @@
 ; can just take an arbitrary number of items from it
 ; (and behind the scenes we'll recursively call the api and
 ; add to the list by incrementing pages).
-(defn get-paged-results [page endpoint]
+(defn get-paged-results-from-moviedb [page endpoint]
   (concat
    (get (http/get-simple-json (str url endpoint) {:page page :api_key apikey}) "results")
    (lazy-seq (get-paged-results (+ page 1) endpoint))))
@@ -37,4 +37,4 @@
 (defn now-playing [options]
   (let [limit (or (:limit options) default-number-of-results)
        page (from-offset-page-start (or (:offset options) default-page-start))]
-    (take limit (get-paged-results page "movie/now_playing"))))
+    (take limit (get-paged-results-from-moviedb page "movie/now_playing"))))
