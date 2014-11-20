@@ -27,3 +27,5 @@
   (->
     (api/api-call (str "movie/" id "/credits"))
     (get "cast")))
+
+(defn average-age [id])

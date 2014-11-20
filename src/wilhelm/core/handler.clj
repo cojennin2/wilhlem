@@ -7,7 +7,8 @@
             [ring.util.response :only [response]]
             [ring.middleware.cors :refer [wrap-cors]])
   (:require [wilhelm.core.movies :as movies]
-            [wilhelm.core.cache :as cache]))
+            [wilhelm.core.cache :as cache]
+            [wilhelm.core.utils :as utils]))
 
 (def default-limit 20)
 (def default-offset 1)
@@ -15,7 +16,7 @@
 (defn get-now-playing [options]
   (let [offset (or (:offset options) default-offset)
         limit (or (:limit options) default-limit)]
-    (response (movies/now-playing (Integer/parseInt offset) (Integer/parseInt limit)))))
+    (response (movies/now-playing (utils/str-to-int offset) (utils/str-to-int limit)))))
 
 (defn get-cast [movieid]
   (response (movies/cast movieid)))
