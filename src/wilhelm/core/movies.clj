@@ -6,7 +6,7 @@
 (def default-number-of-results 20)
 (def default-page-start 1)
 (def maximum-offset 20)
-(def maximum-limit 200)
+(def maximum-limit 20)
 (def url "http://api.themoviedb.org/3/")
 (def apikey "abac630288252315438d1c09840f4297")
 
@@ -27,7 +27,7 @@
 ; (and behind the scenes we'll recursively call the api and
 ; add to the list by incrementing pages).
 (defn get-paged-results [page endpoint]
-  (cons
+  (concat
    (get (http/get-simple-json (str url endpoint) {:page page :api_key apikey}) "results")
    (lazy-seq (get-paged-results (+ page 1) endpoint))))
 
@@ -36,5 +36,5 @@
 ; it as a stream of movies.
 (defn now-playing [options]
   (let [limit (or (:limit options) default-number-of-results)
-       page (from-offset-page-start (or (:limit options) default-page-start))]
+       page (from-offset-page-start (or (:offset options) default-page-start))]
     (take limit (get-paged-results page "movie/now_playing"))))
