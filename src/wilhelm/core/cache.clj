@@ -1,11 +1,20 @@
-(ns wilhelm.core.cache)
+(ns wilhelm.core.cache
+  (:require [clojurewerkz.spyglass.client :as cache]))
 
-(set! bucket {})
+(declare ^:dynamic *memcache*)
 
-; todo: persist nil
+(def servers "127.0.0.1:11211")
 
-(def update! [key val & options]
-  (let [expire (or (:expire options) 0)]
-    )
+(defn set! [key val & options]
+  (let [expire (or (:expire options) 500)]
+    (cache/set *memcache* key expire val)))
 
-(def get [key])
+(defn delete [key]
+  (cache/delete *memcache* key))
+
+(defn get [key]
+  (cache/get *memcache* key))
+
+(defn connect! []
+  (defn connect! []
+    (alter-var-root (var *memcache*) (constantly (cache/text-connection servers)))))

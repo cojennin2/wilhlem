@@ -19,13 +19,18 @@
 (defn get-resp-code [resp]
   (:status (resp)))
 
-(defn get-simple [url params]
-  (get-resp-body (get url {:query-params params})))
+; Simplified request. Just takes url + params
+(defn get-simple
+  [url params]
+    (get-resp-body (get url {:query-params params})))
 
-(defn get-simple-json [url params]
-  (->
-    (get-simple url params)
-    (from-json-to-edn)))
+; Simpler simplified request. Just takes url + params
+; and coerce response body from json to edn
+(defn get-simple-json
+  [url params]
+    (->
+      (get-simple url params)
+      (from-json-to-edn)))
 
 (defn iserror? [resp]
   (if

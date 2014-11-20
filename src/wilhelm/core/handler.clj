@@ -6,15 +6,16 @@
             [ring.middleware.json :as json]
             [ring.util.response :only [response]]
             [ring.middleware.cors :refer [wrap-cors]])
-  (:require [wilhelm.core.movies :as movies]))
+  (:require [wilhelm.core.movies :as movies]
+            [wilhelm.core.cache :as cache]))
 
 (def default-limit 20)
 (def default-offset 1)
 
 (defn get-now-playing [options]
-  (let [offset (or (:offset options) default-page-start)
-        limit (or (:limit options) default-page-start)])
-  (response (movies/now-playing offset limit)))
+  (let [offset (or (:offset options) default-offset)
+        limit (or (:limit options) default-limit)]
+    (response (movies/now-playing (Integer/parseInt offset) (Integer/parseInt limit)))))
 
 (defroutes app-routes
   (GET "/" [] "<a href='https://www.youtube.com/watch?v=cdbYsoEasio'>Wilhelm</a>")
@@ -23,8 +24,10 @@
   (route/not-found "Not Found"))
 
 (def app
-  (->
-    (handler/site app-routes)
-    (json/wrap-json-body)
-    (json/wrap-json-response)
-    (wrap-cors :access-control-allow-origin #"http://localhost:3000" :access-control-allow-methods [:get :put :post :delete])))
+  (do
+    (cache/connect!)
+    (->
+      (handler/site app-routes)
+      (json/wrap-json-body)
+      (json/wrap-json-response)
+      (wrap-cors :access-control-allow-origin #"http://localhost:3000" :access-control-allow-methods [:get :put :post :delete]))))
