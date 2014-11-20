@@ -8,7 +8,13 @@
             [ring.middleware.cors :refer [wrap-cors]])
   (:require [wilhelm.core.movies :as movies]))
 
-(defn get-now-playing [options] (response (movies/now-playing options)))
+(def default-limit 20)
+(def default-offset 1)
+
+(defn get-now-playing [options]
+  (let [offset (or (:offset options) default-page-start)
+        limit (or (:limit options) default-page-start)])
+  (response (movies/now-playing offset limit)))
 
 (defroutes app-routes
   (GET "/" [] "<a href='https://www.youtube.com/watch?v=cdbYsoEasio'>Wilhelm</a>")
