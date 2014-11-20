@@ -7,7 +7,7 @@
 (def default-page-start 1)
 (def maximum-offset 20)
 (def maximum-limit 20)
-(def url "http://api.themoviedb.org/3/")
+(def url "http://api.themoviedb.org/3")
 (def apikey "abac630288252315438d1c09840f4297")
 
 ; Since we're using limit/offset we need
@@ -37,4 +37,7 @@
 (defn now-playing [options]
   (let [limit (or (:limit options) default-number-of-results)
        page (from-offset-page-start (or (:offset options) default-page-start))]
-    (take limit (get-paged-results-from-moviedb page "movie/now_playing"))))
+    (take limit (get-paged-results-from-moviedb page "/movie/now_playing"))))
+
+(defn get-cast [id]
+  (get (http/get-simple-json (str url "/movie/" id "/credits") {:api_key apikey})) "cast")

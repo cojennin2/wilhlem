@@ -9,6 +9,7 @@
 (defn from-json-to-edn [json-string]
   (parse-string json-string))
 
+; Todo: what's the best way to handle anomalies? (anything that is not a 200, 301, 302).
 (defn get [url options]
   (client/get url options))
 
