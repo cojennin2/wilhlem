@@ -1,0 +1,90 @@
+Problem: Write a program that lists the movies showing in theaters and calculate the average age of the cast for each movie.
+
+Subproblem 1: List movies showing in theaters
+    - Need a data source for movies
+
+        - Rotten Tomatoes - Rate limited. 5 calls per second/10,000 per day
+            - Provides API for general movie search by country
+            - Has limit/pagination
+
+        - IMDB - Is there an existing endpoint?
+
+        - Fandango
+            - Provides api for movie search by zipcode, state, lat/lon. No general
+            - No apparent rate limit
+            - Has limit/pagination
+
+        - OnConnect
+            - Provides api for movie search by zipcode or lat/lon. No general
+            - Hard rate limit of 50 requests/day. You can sign up for a hackathon plan
+              to get 10,000 requests/day (but this appears to be a temporary plan which will
+              default to 50 requests/day after unknown period of time)
+
+        - themoviedb.org
+            - api key - abac630288252315438d1c09840f4297
+            - Get movies that are out over the upcoming week (past week?)
+            - Need to find if there is search capability
+
+        - Going to need an http library
+
+    - Need to read data from that data source
+        - What kind of format is the data?
+            - All above api's provide data in json format (by default).
+            - Going to need a json deserializer/serializer
+        - How to deal with rate limits?
+        - Could we pool data from different endpoints?
+            - Or use data from different endpoints to target specific constraints?
+
+    - Need to store data?
+        - At least in some sort of transient form. Might be good to persist.
+        - Transient/persistence would be helpful with rate limiting
+        - When and how should the data be updated?
+            - Update and cache on calls every x minutes?
+            - Update behind the scenes on some kind of schedule?
+
+    - How should data be displayed?
+        - Easy default would be standard out
+        - Would be useful to output it as json, xml?
+            - Gonna need that serializer
+
+    - Should data be queryable?
+        - Find all movies that are in theaters where cast member's average age is around x
+        - Find movie with biggest/smallest avg age?
+
+Subproblem 2: Given a movie, calculate the average age of the cast
+    - How do you find who is in the movie?
+        - How many cast members is accurate?
+        - What if only 5 cast members provided?
+        - Do any movie databases above provide cast information at all?
+
+    - Need data for cast (how to search?)
+        - Wikipedia - No hard/fast rule on rate limiting
+            - How accurate is searching for a cast member name?
+            - Sometimes a small cast list is provided for wikipedia entries on movies
+                - Can we do a lookup for cast members based on movie?
+                - How many cast members qualifies?
+
+        - Freebase - Allows up to 100,000 requests a day
+            - Accuracy?
+            - Can we query by movie name to find related people?
+
+        - themoviedb.org
+            - api key - abac630288252315438d1c09840f4297
+            - Get cast members
+            - Need to find if there is search capability
+
+    - What if data for cast member does not exist?
+        - Provide some kind of sane default (do not count, count as x age, count as -x age, etc)
+
+    - Who qualifies as a cast member? (cameos, bit roles, etc)
+
+    - Storing data?
+        - It would be nice to persist data
+        - If we persist data, can we do a lookup on it for cast name instead of having to track that
+          cast member down again?
+        - We should be able to store cast member + information on cast member and re-use
+
+    How to query?
+        - It would be useful to query on cast member name
+        - It would be useful to query on movie for all cast in movie
+        - It would be useful to query on age?
