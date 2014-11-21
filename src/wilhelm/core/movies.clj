@@ -21,6 +21,7 @@
   (let [page (from-offset-page-start offset)]
     (take limit (api/api-call-paged "movie/now_playing" page))))
 
+
 ; note I could not find this the api documentation. Ended up googling around
 ; to see if the endpoint existed and turns out it did (eg, "themoviedatabase api movie credits").
 (defn cast-of-movie [id]
@@ -28,4 +29,22 @@
     (api/api-call (str "movie/" id "/credits"))
     (get "cast")))
 
-(defn average-age [id])
+; retrieve profile information on a cast member
+; based on a given id
+(defn get-cast-member-profile [cast-member]
+  (get (api/api-call (str url "/person/" (:id cast-member)))))
+
+; our trusty friend map reduce
+; map over cast member information to get profiles
+; map over profiles to get ages
+; reduce to get a total of ages
+; divide by number of cast members
+; todo: handle cast members without birthdays
+(defn average-age-of-cast [id]
+  (let [cast (cast-of-movie id)]
+    (/
+      (reduce +
+        (map
+          (get-cast-member-age
+            (map
+              (get-cast-profile cast)))))) (count cast)))

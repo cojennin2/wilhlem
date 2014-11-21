@@ -22,7 +22,7 @@
   (response (movies/cast-of-movie movieid)))
 
 (defn get-average-age-of-cast [movieid]
-  (response (movies/average-age movieid)))
+  (response (movies/average-age-of-cast movieid)))
 
 (defroutes app-routes
   (GET "/" [] "<a href='https://www.youtube.com/watch?v=cdbYsoEasio'>Wilhelm</a>")

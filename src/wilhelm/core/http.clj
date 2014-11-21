@@ -10,6 +10,7 @@
   (parse-string json-string))
 
 ; Todo: what's the best way to handle anomalies? (anything that is not a 200, 301, 302).
+; Need to propagate errors.
 (defn get [url options]
   (try
     (client/get url options)
@@ -30,12 +31,11 @@
 ; and coerce response body from json to edn
 (defn get-simple-json
   [url params]
-  (try
     (->
       (get-simple url params)
-      (from-json-to-edn))
-    (catch Exception e)))
+      (from-json-to-edn)))
 
+; Helper methods to determine the response
 
 (defn iserror? [resp]
   (if
