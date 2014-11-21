@@ -59,7 +59,7 @@
     (let [params (assoc params :api_key apikey)
           expire (or expire api-cache-time)]
       (try
-        (http-request endpoint params)
+        (http-request-cached endpoint params expire)
         (catch Exception e (throw e))))))
 
 ; Multiple arity paged api call. Lazy sequence so we can do

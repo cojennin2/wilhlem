@@ -3,6 +3,8 @@
   (:require [cheshire.core :refer :all])
   (:require [clojure.core.match :as matching]))
 
+; Some custom responses to normalize any error messages
+; from our http requests.
 (def text-401 "Does't seem like you've got the correct permissions to make this call.")
 (def text-404 "Hrm. This doesn't appear to exist?")
 (def text-500 "Woah. Something's way off. Try again in a bit?")
