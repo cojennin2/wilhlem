@@ -36,7 +36,7 @@
       (from-json-to-edn)))
 
 ; Helper methods to determine the response
-
+; todo: find a use for these? Currently unused, but seem like they could come in handy
 (defn iserror? [resp]
   (if
     (>= (:status resp) 500)

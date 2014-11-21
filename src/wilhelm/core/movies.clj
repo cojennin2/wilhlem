@@ -25,11 +25,13 @@
       (utils/get-years-since-date-ymd birthday))))
 
 ; our trusty friend map reduce
-; map over cast member information to get profiles
-; map over profiles to get ages
-; reduce to get a total of ages
-; divide by number of cast members
-; todo: handle cast members without birthdays
+; We need to get the average age of the cast for a given movie.
+; There are two endpoints we need. One endpoint gets us some
+; basic credit infor for all cast members in the movie. The other endpoint
+; will get us more in depth personal info (like birthday). The easiest way
+; to handle this is to map over the basic info to make calls to advanced info
+; and then map over that to get ages. Conveniently reduce and take average.
+; todo: handle cast members without birthdays (should they be removed, counted, etc?)
 (defn average-age-of-cast [id]
   (let [cast (cast-of-movie id)]
     {:average_age
