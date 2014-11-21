@@ -9,7 +9,8 @@
                  [ring-cors "0.1.4"]
                  [cheshire "5.3.1"]
                  [clj-http "1.0.1"]
-                 [clojurewerkz/spyglass "1.0.0"]]
+                 [clojurewerkz/spyglass "1.0.0"]
+                 [clj-time "0.8.0"]]
   :plugins [[lein-ring "0.8.13"]]
   :ring {:handler wilhelm.core.handler/app}
   :profiles
