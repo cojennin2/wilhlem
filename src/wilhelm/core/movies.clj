@@ -11,12 +11,16 @@
 ; note I could not find this the api documentation. Ended up googling around
 ; to see if the endpoint existed and turns out it did (eg, "themoviedatabase api movie credits").
 (defn cast-of-movie [id]
-  (get (api/api-call (str "movie/" id "/credits")) "cast"))
+  (try
+    (get (api/api-call (str "movie/" id "/credits")) "cast")
+    (catch Exception e (throw e))))
 
 ; retrieve profile information on a cast member
 ; based on a given id
 (defn cast-member-profile [cast-member]
-  (api/api-call (str "person/" (get cast-member "id"))))
+  (try
+    (api/api-call (str "person/" (get cast-member "id")))
+    (catch Exception e (throw e))))
 
 (defn cast-member-age [profile]
   (let [birthday (get profile "birthday")]
@@ -33,10 +37,13 @@
 ; and then map over that to get ages. Conveniently reduce and take average.
 ; todo: handle cast members without birthdays (should they be removed, counted, etc?)
 (defn average-age-of-cast [id]
-  (let [cast (cast-of-movie id)]
-    {:average_age
-     (/
-      (reduce +
-        (map cast-member-age
-          (map cast-member-profile cast)))
-      (count cast))}))
+  (try
+    (let [cast (cast-of-movie id)]
+      {:average_age
+      (/
+        (reduce +
+          (map cast-member-age
+            (map cast-member-profile cast)))
+        (count cast))
+      :movieid id})
+    (catch Exception e (throw e))))

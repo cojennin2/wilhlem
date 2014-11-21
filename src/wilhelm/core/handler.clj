@@ -8,10 +8,12 @@
             [ring.middleware.cors :refer [wrap-cors]])
   (:require [wilhelm.core.movies :as movies]
             [wilhelm.core.cache :as cache]
-            [wilhelm.core.utils :as utils]))
+            [wilhelm.core.utils :as utils]
+            [wilhelm.core.logging :as log]))
 
 (def default-limit 20)
 (def default-offset 1)
+
 
 (defn get-now-playing [options]
   (let [offset (or (:offset options) default-offset)
@@ -29,7 +31,7 @@
   (GET "/movies/now-playing" {params :query-params} (get-now-playing params))
   (GET "/movies/:movieid/cast/" [movieid] (get-cast-of-movie movieid))
   (GET "/movies/:movieid/average-age-of-cast" [movieid] (get-average-age-of-cast movieid))
-  (route/files "/app")
+  (route/resources "/app" {:root "/resources/public/app"})
   (route/not-found "Not Found"))
 
 (def app
@@ -37,6 +39,8 @@
     (cache/connect!)
     (->
       (handler/site app-routes)
+      (exceptional/is-exception?)
+      (log/log-me)
       (json/wrap-json-body)
       (json/wrap-json-response)
       (wrap-cors :access-control-allow-origin #"http://localhost:3000" :access-control-allow-methods [:get :put :post :delete]))))
