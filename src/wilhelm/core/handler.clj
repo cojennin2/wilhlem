@@ -9,7 +9,8 @@
   (:require [wilhelm.core.movies :as movies]
             [wilhelm.core.cache :as cache]
             [wilhelm.core.utils :as utils]
-            [wilhelm.core.logging :as log]))
+            [wilhelm.core.logging :as log]
+            [wilhelm.core.exceptional :as exceptional]))
 
 (def default-limit 20)
 (def default-offset 1)

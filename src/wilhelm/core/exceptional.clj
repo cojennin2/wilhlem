@@ -1,15 +1,18 @@
-(ns wilhelm.core.exceptional)
+(ns wilhelm.core.exceptional
+    (:use ring.util.response))
 
-; This was a nifty bit of middleware I found
-; Seemed convenient for this use case
-(defn is-exception? [f]
+; This is actually a nifty bit of middleware
+; I based off something on stackoverflow +
+; the json-response-body middleware that comes with
+; ring
+(defn is-exception?
   {:arglists '([handler options])}
-  [handler]
+  [handler & [{:as options}]]
   (fn [request]
     (try
       (let [response (handler request)]
         response)
       (catch Exception e
-        (let [error-response (response (.getMessage e))]
+        (let [error-response (response {:error true :msg (.getMessage e)})]
              (status error-response 500)
              error-response)))))

@@ -1,9 +1,9 @@
 (ns wilhelm.core.http
   (:require [clj-http.client :as client])
   (:require [cheshire.core :refer :all])
-  (:require [clojure.core.match :only (match)]))
+  (:require [clojure.core.match :as matching]))
 
-(def text-401 "There was an error with the API key. Is it correct?")
+(def text-401 "Does't seem like you've got the correct permissions to make this call.")
 (def text-404 "Hrm. This doesn't appear to exist?")
 (def text-500 "Woah. Something's way off. Try again in a bit?")
 
@@ -14,19 +14,19 @@
 (defn from-json-to-edn [json-string]
   (parse-string json-string))
 
-(defn app-specific-http-exception-messages [error-msg]
+(defn throw-http-exception-message [error-msg]
       (throw
-        (match [(:status error-msg)]
+        (matching/match [(:status (:object (ex-data error-msg)))]
              [401] (Exception. text-401)
              [404] (Exception. text-404)
-             [500] (Exception. text-500))))
+             [_] (Exception. text-500))))
 
 ; Todo: what's the best way to handle anomalies? (anything that is not a 200, 301, 302).
 ; Need to propagate errors.
 (defn get [url options]
   (try
-    (client/get url (assoc options :throw-entire-message? true)
-    (catch Exception e (throw-app-specific-http-exception e))))
+    (client/get url (assoc options :throw-entire-message? true))
+    (catch Exception e (throw-http-exception-message e))))
 
 (defn get-resp-body [resp]
   (:body resp))
@@ -46,8 +46,8 @@
   (try
     (->
       (get-simple url params)
-      (from-json-to-edn)))
-  (catch Exception e (throw e)))
+      (from-json-to-edn))
+  (catch Exception e (throw e))))
 
 ; Helper methods to determine the response
 ; todo: find a use for these? Currently unused, but seem like they could come in handy
