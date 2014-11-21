@@ -12,6 +12,9 @@
 (defn delete [key]
   (cache/delete *memcache* key))
 
+(defn get-async [key]
+  (cache/async-get *memcache* key))
+
 (defn get [key]
   (cache/get *memcache* key))
 

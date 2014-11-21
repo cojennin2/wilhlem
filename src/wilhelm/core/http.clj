@@ -11,7 +11,9 @@
 
 ; Todo: what's the best way to handle anomalies? (anything that is not a 200, 301, 302).
 (defn get [url options]
-  (client/get url options))
+  (try
+    (client/get url options)
+    (catch Exception e)))
 
 (defn get-resp-body [resp]
   (:body resp))
@@ -28,9 +30,12 @@
 ; and coerce response body from json to edn
 (defn get-simple-json
   [url params]
+  (try
     (->
       (get-simple url params)
-      (from-json-to-edn)))
+      (from-json-to-edn))
+    (catch Exception e)))
+
 
 (defn iserror? [resp]
   (if

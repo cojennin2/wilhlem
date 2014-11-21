@@ -17,9 +17,9 @@
 ; Fetch results for movies that are now_playing in a given area
 ; This api is paged, but with a nice lazy list we can just visualize
 ; it as a stream of movies.
-(defn now-playing [offset limit & options]
+(defn now-playing [offset limit]
   (let [page (from-offset-page-start offset)]
-    (take limit (api/api-call-paged page "movie/now_playing" options))))
+    (take limit (api/api-call-paged "movie/now_playing" page))))
 
 ; note I could not find this the api documentation. Ended up googling around
 ; to see if the endpoint existed and turns out it did (eg, "themoviedatabase api movie credits").
