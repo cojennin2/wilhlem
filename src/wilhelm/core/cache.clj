@@ -3,7 +3,7 @@
 
 (declare ^:dynamic *memcache*)
 
-(def servers "127.0.0.1:11211")
+(def server "127.0.0.1:11211")
 
 (defn set! [key val & options]
   (let [expire (or (:expire options) 500)]
@@ -19,5 +19,4 @@
   (cache/get *memcache* key))
 
 (defn connect! []
-  (defn connect! []
-    (alter-var-root (var *memcache*) (constantly (cache/text-connection servers)))))
+    (alter-var-root (var *memcache*) (constantly (cache/text-connection server))))

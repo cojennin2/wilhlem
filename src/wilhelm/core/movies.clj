@@ -23,7 +23,7 @@
 
 ; note I could not find this the api documentation. Ended up googling around
 ; to see if the endpoint existed and turns out it did (eg, "themoviedatabase api movie credits").
-(defn cast [id]
+(defn cast-of-movie [id]
   (->
     (api/api-call (str "movie/" id "/credits"))
     (get "cast")))
