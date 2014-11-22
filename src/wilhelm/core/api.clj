@@ -3,7 +3,7 @@
   (:require [wilhelm.core.cache :as cache]))
 
 (def api "http://api.themoviedb.org/3/")
-(def apikey "abac630288252315438d1c09840f429")
+(def apikey "abac630288252315438d1c09840f4297")
 (def api-cache-time 500)
 (def api-cache-timeout 1000)
 (def api-default-paged-count 20)
