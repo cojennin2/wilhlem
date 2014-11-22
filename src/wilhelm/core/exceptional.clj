@@ -3,7 +3,6 @@
 
 ; Deal with exceptions
 
-; todo: seems to be correctly returning the 500 message but not the status code?
 (defn is-exception?
       "Some middleware to detect exceptions and
       then wrap them in a 500 response. Based a little bit
@@ -17,5 +16,4 @@
         response)
       (catch Exception e
         (let [error-response (response {:error true :msg (.getMessage e)})]
-             (status error-response 500)
-             error-response)))))
+             (status error-response 500))))))
