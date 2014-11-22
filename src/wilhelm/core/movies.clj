@@ -22,7 +22,7 @@
 (defn now-playing [offset limit]
       (let [movies (take limit (drop offset (api/api-call-paged "movie/now_playing" offset)))]
            (do
-             ;(put-movies-onto-queue movies)
+             (put-movies-onto-queue movies)
              movies)))
 
 ; note I could not find this the api documentation. Ended up googling around
