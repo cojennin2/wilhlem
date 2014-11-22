@@ -19,8 +19,6 @@
 (defn get-now-playing [options]
   (let [offset (or (get options "offset") default-offset)
         limit (or (get options "limit") default-limit)]
-       (println "######")
-       (println (get options "limit"))
     (response (movies/now-playing (utils/str-to-int offset) (utils/str-to-int limit)))))
 
 (defn get-cast-of-movie [movieid]
