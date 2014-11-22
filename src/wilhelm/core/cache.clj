@@ -1,23 +1,23 @@
 (ns wilhelm.core.cache
-  (:require [clojurewerkz.spyglass.client :as cache]))
+  (:require [clojure.core.cache :as c]))
 
-(declare ^:dynamic *memcache*)
+(def default-cache-expiration 86400000) ; default is a day
+(def cache (atom (c/ttl-cache-factory {} :ttl default-cache-expiration)))
 
-(def server "127.0.0.1:11211")
-(def default-cache-expire )
+(defn delete-cache! [key]
+      (swap! cache (constantly (c/evict @cache (keyword key)))))
 
-(defn set! [key val & options]
-  (let [expire (:expire options 500)]
-    (cache/set *memcache* key expire val)))
+(defn get-cache [key]
+      (if (c/has? @cache (keyword key))
+        (c/lookup @cache (keyword key))
+        nil))
 
-(defn delete [key]
-  (cache/delete *memcache* key))
-
-(defn get-async [key]
-  (cache/async-get *memcache* key))
-
-(defn get [key]
-  (cache/get *memcache* key))
-
-(defn connect! []
-    (alter-var-root (var *memcache*) (constantly (cache/text-connection server))))
+(defn set-cache! [key val & options]
+      (if (c/has? @cache key)
+        (do
+          (swap! cache (constantly (c/evict @cache (keyword key))))
+          (swap! cache (constantly (c/miss @cache (keyword key) val)))
+          (c/lookup @cache (keyword key)))
+        (do
+          (swap! cache (constantly (c/miss @cache (keyword key) val)))
+          (c/lookup @cache (keyword key)))))

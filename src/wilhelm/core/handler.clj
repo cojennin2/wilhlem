@@ -35,11 +35,10 @@
 
 (def app
   (do
-    (cache/connect!)
     ; Kick off priming cache at application start
-    (movies/listen-for-movies)
-    (movies/listen-for-cast-members)
-    (movies/now-playing)
+    ;(movies/listen-for-movies)
+    ;(movies/listen-for-cast-members)
+    ;(movies/now-playing 0 20)
     (->
       (handler/site app-routes)
       (exceptional/is-exception?)

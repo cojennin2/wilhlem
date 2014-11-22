@@ -4,8 +4,7 @@
 
 (def api "http://api.themoviedb.org/3/")
 (def apikey "abac630288252315438d1c09840f4297")
-(def api-cache-time 500)
-(def api-cache-timeout 1000)
+(def api-cache-time 3600000)
 (def api-default-paged-count 20)
 
 ; Since we're using limit/offset we need
@@ -25,33 +24,17 @@
 
 ; Standard api http request with caching
 (defn http-request-cached [endpoint params expire]
-  (let [val (cache/get endpoint)]
+  (let [val (cache/get-cache endpoint)]
     (if (not (nil? val))
       val
       (let [val (http-request endpoint params)]
-        (do
-          (let [res (cache/set! endpoint val expire)]
-               @res))))))
-
-; Standard api http request with async caching
-; For this project useful since not sure if system running
-; will have memcache setup correctly. If cannot retrieve from cache
-; after 200ms (ie: if memcache is not running) just do a standard
-; api http request
-; todo: something is not right. Is an exception being thrown? Taking as long as http-request
-(defn http-request-cached-async [endpoint params expire]
-  (let [async-val (cache/get-async endpoint)]
-    (try
-      (let [val (deref async-val api-cache-timeout (http-request endpoint params))]
-        (if (not (nil? val))
-          val
-          (let [val (http-request endpoint params)]
-            (do
-              (cache/set! endpoint val expire)))))
-      (catch Exception e
-        (try
-          (http-request endpoint params)
-          (catch Exception e (throw e)))))))
+           (let [res (cache/set-cache! endpoint val expire)]
+                res)))))
+        ;(do
+        ;  (let [res (cache/set! endpoint val expire)]
+        ;       (println "######")
+        ;       (println res)
+        ;       res))))))
 
 ; Multiple arity api call.
 (defn api-call

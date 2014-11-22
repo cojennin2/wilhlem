@@ -7,13 +7,22 @@
 (def channel-cast (async/chan))
 
 
+; Kicks off our caching pipeline
+(defn put-movies-onto-queue [movies]
+      (async/go-loop [movies movies]
+                     (if (nil? (first movies))
+                       0
+                       (do
+                         (async/>! channel-movies (first movies))
+                         (recur (next movies))))))
+
 ; Fetch results for movies that are now_playing in a given area
 ; This api is paged, but with a nice lazy seq we can just visualize
 ; it as a stream (and utilize limit/offset instead).
 (defn now-playing [offset limit]
       (let [movies (take limit (drop offset (api/api-call-paged "movie/now_playing" offset)))]
            (do
-             (put-movies-onto-queue movies)
+             ;(put-movies-onto-queue movies)
              movies)))
 
 ; note I could not find this the api documentation. Ended up googling around
@@ -60,18 +69,9 @@
 
 ; The asynchronous portion of our movie service
 
-; Here we work hard at avoiding hard external depdencies (who ever heard of databases?).
+; Here we work hard at avoiding hard external depdencies.
 ; In order to get around the rate limitations on the moviedb api, we're going to do the best
 ; we can to pre-cache a bunch of requests.
-
-; Kicks off our caching pipeline
-(defn put-movies-onto-queue [movies]
-      (async/go-loop [movies movies]
-                     (if (nil? (first movies))
-                       0
-                       (do
-                         (async/>! channel-movies (first movies))
-                         (recur (next movies))))))
 
 ; Part of our caching pipeline. Here we hang out and wait for movies
 ; to show up on the queue. Once there's a movie, we make a call to get
