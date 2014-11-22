@@ -6,7 +6,7 @@
 ; This api is paged, but with a nice lazy list we can just visualize
 ; it as a stream of movies.
 (defn now-playing [offset limit]
-    (take limit (api/api-call-paged "movie/now_playing" offset)))
+    (take limit (drop offset (api/api-call-paged "movie/now_playing" offset))))
 
 ; note I could not find this the api documentation. Ended up googling around
 ; to see if the endpoint existed and turns out it did (eg, "themoviedatabase api movie credits").
