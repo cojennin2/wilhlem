@@ -56,23 +56,3 @@
       (get-simple url params)
       (from-json-to-edn))
   (catch Exception e (throw e))))
-
-; Helper methods to determine the response
-; todo: find a use for these? Currently unused, but seem like they could come in handy
-(defn iserror? [resp]
-  (if
-    (>= (:status resp) 500)
-    true
-    false))
-
-(defn ismissing? [resp]
-  (if
-    (= (:status resp ) 404)
-    true
-    false))
-
-(defn isproblem? [resp]
-  (if
-    (or (iserror? resp) (ismissing? resp))
-    true
-    false))

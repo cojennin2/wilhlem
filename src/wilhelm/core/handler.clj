@@ -36,6 +36,7 @@
 (def app
   (do
     (cache/connect!)
+    ; Kick off priming cache at application start
     (movies/listen-for-movies)
     (movies/listen-for-cast-members)
     (movies/now-playing)
