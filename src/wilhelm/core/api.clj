@@ -76,5 +76,5 @@
       (try
         (concat
           (get (api-call endpoint (assoc params :page page) expire) "results")
-            (lazy-seq (api-call endpoint (assoc params :page (+ page 1)) expire)))
+            (lazy-seq (api-call-paged endpoint (+ page 1) params expire)))
         (catch Exception e (throw e))))))
