@@ -64,7 +64,9 @@
 
 ; Multiple arity paged api call. Lazy sequence so we can do
 ; cool stuff like pretend an api uses limits/offsets instead of pages.
+; todo: still not sure if this is the best way to call this. Offset is an argument but limit is optional?
 (defn api-call-paged
+  ([endpoint] (api-call-paged endpoint 1 nil nil))
   ([endpoint offset] (api-call-paged endpoint offset nil nil))
   ([endpoint offset params] (api-call-paged endpoint offset params nil))
   ([endpoint offset params expire]
