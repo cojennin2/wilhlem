@@ -6,7 +6,7 @@
 (def server "127.0.0.1:11211")
 
 (defn set! [key val & options]
-  (let [expire (or (:expire options) 500)]
+  (let [expire (:expire options 500)]
     (cache/set *memcache* key expire val)))
 
 (defn delete [key]

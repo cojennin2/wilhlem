@@ -30,7 +30,8 @@
       val
       (let [val (http-request endpoint params)]
         (do
-          (cache/set! endpoint val expire))))))
+          (let [res (cache/set! endpoint val expire)]
+               @res))))))
 
 ; Standard api http request with async caching
 ; For this project useful since not sure if system running
@@ -45,7 +46,8 @@
         (if (not (nil? val))
           val
           (let [val (http-request endpoint params)]
-            (cache/set! endpoint val expire))))
+            (do
+              (cache/set! endpoint val expire)))))
       (catch Exception e
         (try
           (http-request endpoint params)
@@ -73,8 +75,6 @@
     (let [page (from-offset-page-start offset)]
       (try
         (concat
-          (->
-            (api-call endpoint (assoc params :page page) expire)
-            (get "results"))
+          (get (api-call endpoint (assoc params :page page) expire) "results")
             (lazy-seq (api-call endpoint (assoc params :page (+ page 1)) expire)))
         (catch Exception e (throw e))))))

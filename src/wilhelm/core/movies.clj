@@ -26,7 +26,9 @@
   (let [birthday (get profile "birthday")]
     (if (nil? birthday)
       0
-      (utils/get-years-since-date-ymd birthday))))
+      (try
+        (utils/get-years-since-date-ymd birthday)
+        (catch Exception e 0)))))
 
 ; our trusty friend map reduce
 ; We need to get the average age of the cast for a given movie.
@@ -36,14 +38,16 @@
 ; to handle this is to map over the basic info to make calls to advanced info
 ; and then map over that to get ages. Conveniently reduce and take average.
 ; todo: handle cast members without birthdays (should they be removed, counted, etc?)
+; todo: We're running up hard against the api rate limit. Need to pre-cache actors
 (defn average-age-of-cast [id]
   (try
     (let [cast (cast-of-movie id)]
       {:average_age
-      (/
-        (reduce +
-          (map cast-member-age
-            (map cast-member-profile cast)))
-        (count cast))
+       (let [total-age (reduce +
+                               (map cast-member-age
+                                    (map cast-member-profile cast)))]
+            (if (> total-age 0) ; Sometimes reduction is failing (hitting limt). Avoid divide-by-zero
+            (/ total-age (count cast))
+            0))
       :movieid id})
     (catch Exception e (throw e))))

@@ -16,6 +16,12 @@
 (defn from-json-to-edn [json-string]
   (parse-string json-string))
 
+; This just adds normalized error messaging to the app
+; A sharp thing to do if there's time would be to add
+; some metadata to this error so that caller's could make decisions
+; about whether to throw new error messages with more specific info
+; (ie: if I call http/get and I know a 401 means my api key is wrong,
+; I may want to make a more specific error message to propagate to the user).
 (defn throw-http-exception-message [error-msg]
       (throw
         (matching/match [(:status (:object (ex-data error-msg)))]

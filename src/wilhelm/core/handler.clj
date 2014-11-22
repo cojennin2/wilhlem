@@ -17,8 +17,8 @@
 
 
 (defn get-now-playing [options]
-  (let [offset (or (:offset options) default-offset)
-        limit (or (:limit options) default-limit)]
+  (let [offset (:offset options default-offset)
+        limit (:limit options default-limit)]
     (response (movies/now-playing (utils/str-to-int offset) (utils/str-to-int limit)))))
 
 (defn get-cast-of-movie [movieid]
@@ -28,11 +28,10 @@
   (response (movies/average-age-of-cast movieid)))
 
 (defroutes app-routes
-  (GET "/" [] "<a href='https://www.youtube.com/watch?v=cdbYsoEasio'>Wilhelm</a>")
+  (route/resources "/")
   (GET "/movies/now-playing" {params :query-params} (get-now-playing params))
-  (GET "/movies/:movieid/cast/" [movieid] (get-cast-of-movie movieid))
+  (GET "/movies/:movieid/cast" [movieid] (get-cast-of-movie movieid))
   (GET "/movies/:movieid/average-age-of-cast" [movieid] (get-average-age-of-cast movieid))
-  (route/resources "/app" {:root "/resources/public/app"})
   (route/not-found "Not Found"))
 
 (def app
@@ -44,4 +43,4 @@
       (log/log-me)
       (json/wrap-json-body)
       (json/wrap-json-response)
-      (wrap-cors :access-control-allow-origin #"http://localhost:3000" :access-control-allow-methods [:get :put :post :delete]))))
+      (wrap-cors :access-control-allow-origin #"\*" :access-control-allow-methods [:get :put :post :delete]))))
