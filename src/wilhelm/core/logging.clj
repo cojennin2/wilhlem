@@ -11,5 +11,5 @@
       {:arglists '([handler options])}
       [handler]
       (fn [request]
-          (println request)
+          ;(print-log request)
           (handler request)))
