@@ -1,11 +1,14 @@
 (ns wilhelm.core.exceptional
     (:use ring.util.response))
 
-; This is actually a nifty bit of middleware
-; I based off something on stackoverflow +
-; the json-response-body middleware that comes with
-; ring
+; Deal with exceptions
+
+; todo: seems to be correctly returning the 500 message but not the status code?
 (defn is-exception?
+      "Some middleware to detect exceptions and
+      then wrap them in a 500 response. Based a little bit
+      off some snippet on stackoverflow but corrected based
+      on https://github.com/ring-clojure/ring-json"
   {:arglists '([handler options])}
   [handler & [{:as options}]]
   (fn [request]

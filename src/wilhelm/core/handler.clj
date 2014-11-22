@@ -12,18 +12,23 @@
             [wilhelm.core.logging :as log]
             [wilhelm.core.exceptional :as exceptional]))
 
+; API Controller
+
 (def default-limit 20)
 (def default-offset 0)
 
 (defn get-now-playing [options]
+      "Gets movies that are now playing in theaters."
   (let [offset (or (get options "offset") default-offset)
         limit (or (get options "limit") default-limit)]
     (response (movies/now-playing (utils/str-to-int offset) (utils/str-to-int limit)))))
 
 (defn get-cast-of-movie [movieid]
+      "Gets the cast of a given movie (by movie id)"
   (response (movies/cast-of-movie movieid)))
 
 (defn get-average-age-of-cast [movieid]
+      "Get's the average age of the cast of a given movie (by movie id)"
   (response (movies/average-age-of-cast movieid)))
 
 (defroutes app-routes
