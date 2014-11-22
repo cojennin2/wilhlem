@@ -4,6 +4,7 @@
 (declare ^:dynamic *memcache*)
 
 (def server "127.0.0.1:11211")
+(def default-cache-expire )
 
 (defn set! [key val & options]
   (let [expire (:expire options 500)]

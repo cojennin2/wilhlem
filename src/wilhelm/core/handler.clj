@@ -15,7 +15,6 @@
 (def default-limit 20)
 (def default-offset 0)
 
-
 (defn get-now-playing [options]
   (let [offset (or (get options "offset") default-offset)
         limit (or (get options "limit") default-limit)]
@@ -37,6 +36,9 @@
 (def app
   (do
     (cache/connect!)
+    (movies/listen-for-movies)
+    (movies/listen-for-cast-members)
+    (movies/now-playing)
     (->
       (handler/site app-routes)
       (exceptional/is-exception?)

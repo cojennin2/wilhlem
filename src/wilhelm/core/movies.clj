@@ -1,12 +1,27 @@
 (ns wilhelm.core.movies
   (:require [wilhelm.core.api :as api]
-            [wilhelm.core.utils :as utils]))
+            [wilhelm.core.utils :as utils])
+  (:require [clojure.core.async :as async]))
+
+(def channel-cast (async/chan))
+(def channel-profile (async/chan))
+
+(defn put-movies-onto-queue [movies]
+      (async/go-loop [movies movies]
+                     (if (nil? (first movies))
+                       0
+                       (do
+                         (async/>! channel-cast (first movies))
+                         (recur (next movies))))))
 
 ; Fetch results for movies that are now_playing in a given area
 ; This api is paged, but with a nice lazy list we can just visualize
 ; it as a stream of movies.
 (defn now-playing [offset limit]
-    (take limit (drop offset (api/api-call-paged "movie/now_playing" offset))))
+      (let [movies (take limit (drop offset (api/api-call-paged "movie/now_playing" offset)))]
+           (do
+             (put-movies-onto-queue movies)
+             movies)))
 
 ; note I could not find this the api documentation. Ended up googling around
 ; to see if the endpoint existed and turns out it did (eg, "themoviedatabase api movie credits").
@@ -51,3 +66,25 @@
             0))
       :movieid id})
     (catch Exception e (throw e))))
+
+
+(defn listen-for-movies []
+      (async/go-loop []
+                     (let [movie (async/<! channel-cast)
+                           cast (cast-of-movie (get movie "id"))]
+                          (loop [cast cast]
+                                (if (nil? (first cast))
+                                  0
+                                  (do
+                                    (async/>! channel-profile (first cast))
+                                    (recur (next cast)))))
+                          (async/<! (async/timeout (rand-nth (range 500 1000)))))
+                     (recur)))
+
+(defn listen-for-cast-members []
+      (async/go-loop []
+                     (let [cast-member (async/<! channel-profile)]
+                          (do
+                            (cast-member-profile cast-member)
+                            (async/<! (async/timeout (rand-nth (range 500 1000))))))
+                     (recur)))
