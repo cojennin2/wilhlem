@@ -30,11 +30,6 @@
       (let [val (http-request endpoint params)]
            (let [res (cache/set-cache! endpoint val expire)]
                 res)))))
-        ;(do
-        ;  (let [res (cache/set! endpoint val expire)]
-        ;       (println "######")
-        ;       (println res)
-        ;       res))))))
 
 ; Multiple arity api call.
 (defn api-call
