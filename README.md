@@ -76,10 +76,10 @@ I talked a little bit about the constraints of rate limiting above. The rate lim
 The steps of the solution are as follows:
 1. Before the web server boots, make a call to themoviedb.org with to get 20 movies (the default number to retrieve). 
 2. Asynchronously place each movie profile individually on a channel.
-2. A consumer listening on the channel takes each movie profile, makes a call to get the credits of the movie and then places each credit individually on a second channel
-3. A consumer listening on the second channel takes each credit and makes a call to get the cast member profile.
-4. After about 60-90 seconds we'll have the majority of actor profiles in the cache.
-5. Given that this is done asynchronously, we can still field requests while the cache is being primed.
+3. A consumer listening on the channel takes each movie profile, makes a call to get the credits of the movie and then places each credit individually on a second channel
+4. A consumer listening on the second channel takes each credit and makes a call to get the cast member profile.
+5. After about 60-90 seconds we'll have the majority of actor profiles in the cache.
+6. Given that this is done asynchronously, we can still field requests while the cache is being primed.
 
 This solution is pretty naive. If this application starts taking requests before a majority of profiles are in cache we're going to hit themoviedb.org rate limit. The application will also place items into the pipeline for any given request to movies that are now playing. While the use of a pipeline would hopefully deter channel overflow, a substantial number of requests would more than likely cause problems for the pipeline. Regardless, I found it a good opportunity to get to know core.async (and hopefully can now work on applying it in more practical solutions)
 
