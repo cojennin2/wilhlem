@@ -1,7 +1,7 @@
 (ns wilhelm.core.movies
-  (:require [wilhelm.core.api :as api]
-            [wilhelm.core.utils :as utils])
-  (:require [clojure.core.async :as async]))
+    (:require [wilhelm.core.api :as api]
+      [wilhelm.core.utils :as utils])
+    (:require [clojure.core.async :as async]))
 
 ; A service for movie specific information.
 
@@ -30,9 +30,9 @@
 ; found it online somewhere.
 (defn cast-of-movie [id]
       "Get the cast of a movie given a movie id."
-  (try
-    (api/movie-cast id)
-    (catch Exception e (throw e))))
+      (try
+        (api/movie-cast id)
+        (catch Exception e (throw e))))
 
 ; There are two kinds of profiles. The "basic" profiles
 ; which come from "movie/:movieID/credits" and the "advanced"
@@ -43,34 +43,34 @@
 (defn cast-member-profile [cast-member]
       "Get the advanced profile information of a given cast member
       from a basic cast member profile"
-  (try
-    (api/cast-profile cast-member)
-    (catch Exception e (throw e))))
+      (try
+        (api/cast-profile cast-member)
+        (catch Exception e (throw e))))
 
 (defn cast-member-age [profile]
       "Given an advanced profile get the age of a cast member."
-  (let [birthday (get profile "birthday")]
-    (if (nil? birthday)
-      0
-      (try
-        (utils/get-years-since-date-ymd birthday)
-        (catch Exception e 0)))))
+      (let [birthday (get profile "birthday")]
+           (if (nil? birthday)
+             0
+             (try
+               (utils/get-years-since-date-ymd birthday)
+               (catch Exception e 0)))))
 
 ; todo: handle cast members without birthdays (should they be removed, counted, etc?)
 (defn average-age-of-cast [id]
       "Given the average age of a cast of a movie given
       a movie id."
-  (try
-    (let [cast (cast-of-movie id)
-          cast-profiles (map cast-member-profile cast)
-          cast-ages (filter utils/gtzero (map cast-member-age cast-profiles))]
-      {:average_age
-       (let [total-age (reduce + cast-ages)]
-            (if (> total-age 0) ; Sometimes reduction is failing (usually when we hit rate limit). Avoid divide-by-zero
-            (/ total-age (count cast-ages))
-            0))
-      :movieid id})
-    (catch Exception e (throw e))))
+      (try
+        (let [cast (cast-of-movie id)
+              cast-profiles (map cast-member-profile cast)
+              cast-ages (filter utils/gtzero (map cast-member-age cast-profiles))]
+             {:average_age
+                       (let [total-age (reduce + cast-ages)]
+                            (if (> total-age 0) ; Sometimes reduction is failing (usually when we hit rate limit). Avoid divide-by-zero
+                              (/ total-age (count cast-ages))
+                              0))
+              :movieid id})
+        (catch Exception e (throw e))))
 
 
 ; ####### core.async ######

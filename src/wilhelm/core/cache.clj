@@ -1,5 +1,5 @@
 (ns wilhelm.core.cache
-  (:require [clojure.core.cache :as c]))
+    (:require [clojure.core.cache :as c]))
 
 ; A basic in memory caching solution
 
