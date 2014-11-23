@@ -1,4 +1,4 @@
-(defproject wilhelm "0.1.0-SNAPSHOT"
+(defproject wilhelm "0.1.0"
   :description "Find movies. Find actors. Do math"
   :url "http://i.am.not.real"
   :min-lein-version "2.0.0"
@@ -17,6 +17,7 @@
   :plugins [[lein-ring "0.8.13"]]
   :ring {:handler wilhelm.core.handler/app}
   :main wilhelm.core.handler
-  :profiles
-  {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                        [ring-mock "0.1.5"]]}})
+  :target-path "target/%s/"
+  :profiles {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
+                        [ring-mock "0.1.5"]]}
+             :uberjar {:aot :all}})
