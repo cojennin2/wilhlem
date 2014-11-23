@@ -31,7 +31,7 @@
 (defn cast-of-movie [id]
       "Get the cast of a movie given a movie id."
   (try
-    (get (api/movie-cast id)
+    (api/movie-cast id)
     (catch Exception e (throw e))))
 
 ; There are two kinds of profiles. The "basic" profiles
