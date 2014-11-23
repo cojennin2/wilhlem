@@ -21,7 +21,7 @@
 (defn now-playing [offset limit]
       "Fetch movies that are now playing in theaters. Takes a limit
       and an offset."
-      (let [movies (take limit (drop offset (api/api-call-paged "movie/now_playing" offset)))]
+      (let [movies (take limit (drop offset (api/now-playing)))]
            (do
              (put-movies-onto-queue movies)
              movies)))
@@ -31,7 +31,7 @@
 (defn cast-of-movie [id]
       "Get the cast of a movie given a movie id."
   (try
-    (get (api/api-call (str "movie/" id "/credits")) "cast")
+    (get (api/movie-cast id)
     (catch Exception e (throw e))))
 
 ; There are two kinds of profiles. The "basic" profiles
@@ -44,7 +44,7 @@
       "Get the advanced profile information of a given cast member
       from a basic cast member profile"
   (try
-    (api/api-call (str "person/" (get cast-member "id")))
+    (api/cast-profile cast-member)
     (catch Exception e (throw e))))
 
 (defn cast-member-age [profile]

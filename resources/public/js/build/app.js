@@ -2,14 +2,6 @@ var CONFIG = {
     apiPath: 'http://localhost:3000/'
 };
 
-var AverageCastAge = React.createClass({displayName: 'AverageCastAge',
-    render: function() {
-        return (
-            React.createElement("h5", null, "Average age of cast: ", React.createElement("span", null, this.props.age))
-        );
-    }
-});
-
 var CastList = React.createClass({displayName: 'CastList',
     render: function() {
         var cast = this.props.cast.map(function(cast) {
@@ -21,9 +13,13 @@ var CastList = React.createClass({displayName: 'CastList',
             );
         });
 
+        var age = Math.floor(this.props.age);
+        var castLen = this.props.cast.length;
+
         return (
             React.createElement("div", {id: "cast-information"}, 
-                React.createElement(AverageCastAge, {age: this.props.age}), 
+                React.createElement("h3", null, this.props.movie.title), 
+                !age ? React.createElement("p", null, "No date of birth information on file for any of the actors in this film. ") : React.createElement("h5", null, "Average age of cast: ", React.createElement("span", null, age)), 
                 React.createElement("table", {className: "table table-striped col-sm-6"}, 
                     React.createElement("thead", null, 
                         React.createElement("tr", null, 
@@ -88,18 +84,18 @@ var App = React.createClass({displayName: 'App',
         };
     },
     updateCast: function(index) {
-        var movieID = this.state.movies[index].id;
+        var activeMovie = this.state.movies[index]
 
         $.ajax({
-            url: CONFIG.apiPath + 'movies/' + movieID + '/cast',
+            url: CONFIG.apiPath + 'movies/' + activeMovie.id + '/cast',
             dataType: 'json',
             success: function(data) {
                 var cast = data;
                 $.ajax({
-                    url: CONFIG.apiPath + 'movies/' + movieID + '/average-age-of-cast',
+                    url: CONFIG.apiPath + 'movies/' + activeMovie.id + '/average-age-of-cast',
                     dataType: 'json',
                     success: function(data) {
-                        this.setState({cast: cast, movies: this.state.movies, age: data.average_age});
+                        this.setState({cast: cast, movie: activeMovie, movies: this.state.movies, age: data.average_age});
                     }.bind(this),
                     error: function(xhr, status, err) {
                         console.error(this.props.url, status, err.toString());
@@ -117,7 +113,7 @@ var App = React.createClass({displayName: 'App',
         return (
             React.createElement("div", {id: "app"}, 
                 React.createElement(MovieList, {onClick: this.updateCast, movies: this.state.movies}), 
-                 this.state.cast.length ? React.createElement(CastList, {cast: this.state.cast, age: this.state.age}) : null
+                 this.state.cast.length ? React.createElement(CastList, {cast: this.state.cast, age: this.state.age, movie: this.state.movie}) : React.createElement("p", null, "No actors listed for this film.")
             )
         )
 

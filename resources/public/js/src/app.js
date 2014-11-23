@@ -2,14 +2,6 @@ var CONFIG = {
     apiPath: 'http://localhost:3000/'
 };
 
-var AverageCastAge = React.createClass({
-    render: function() {
-        return (
-            <h5>Average age of cast: <span>{this.props.age}</span></h5>
-        );
-    }
-});
-
 var CastList = React.createClass({
     render: function() {
         var cast = this.props.cast.map(function(cast) {
@@ -21,9 +13,13 @@ var CastList = React.createClass({
             );
         });
 
+        var age = Math.floor(this.props.age);
+        var castLen = this.props.cast.length;
+
         return (
             <div id="cast-information">
-                <AverageCastAge age={this.props.age} />
+                <h3>{this.props.movie.title}</h3>
+                {!age ? <p>No date of birth information on file for any of the actors in this film. </p> : <h5>Average age of cast: <span>{age}</span></h5>}
                 <table className="table table-striped col-sm-6">
                     <thead>
                         <tr>
@@ -88,18 +84,18 @@ var App = React.createClass({
         };
     },
     updateCast: function(index) {
-        var movieID = this.state.movies[index].id;
+        var activeMovie = this.state.movies[index]
 
         $.ajax({
-            url: CONFIG.apiPath + 'movies/' + movieID + '/cast',
+            url: CONFIG.apiPath + 'movies/' + activeMovie.id + '/cast',
             dataType: 'json',
             success: function(data) {
                 var cast = data;
                 $.ajax({
-                    url: CONFIG.apiPath + 'movies/' + movieID + '/average-age-of-cast',
+                    url: CONFIG.apiPath + 'movies/' + activeMovie.id + '/average-age-of-cast',
                     dataType: 'json',
                     success: function(data) {
-                        this.setState({cast: cast, movies: this.state.movies, age: data.average_age});
+                        this.setState({cast: cast, movie: activeMovie, movies: this.state.movies, age: data.average_age});
                     }.bind(this),
                     error: function(xhr, status, err) {
                         console.error(this.props.url, status, err.toString());
@@ -117,7 +113,7 @@ var App = React.createClass({
         return (
             <div id="app">
                 <MovieList onClick={this.updateCast} movies={this.state.movies} />
-                { this.state.cast.length ? <CastList cast={this.state.cast} age={this.state.age} /> : null }
+                { this.state.cast.length ? <CastList cast={this.state.cast} age={this.state.age} movie={this.state.movie} /> : <p>No actors listed for this film.</p> }
             </div>
         )
 

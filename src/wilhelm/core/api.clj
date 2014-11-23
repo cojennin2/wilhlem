@@ -66,3 +66,12 @@
           (get (api-call endpoint (assoc params :page page) expire) "results")
             (lazy-seq (api-call-paged endpoint (+ page 1) params expire)))
         (catch Exception e (throw e))))))
+
+(defn now-playing [offset]
+      (api-call-paged "movie/now_playing" offset))
+
+(defn movie-cast [id]
+      (api-call (str "movie/" id "/credits")) "cast")
+
+(defn cast-profile [cast-member]
+      (api-call (str "person/" (get cast-member "id"))))
