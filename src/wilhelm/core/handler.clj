@@ -50,4 +50,4 @@
     (wrap-cors :access-control-allow-origin #"\*" :access-control-allow-methods [:get :put :post :delete])))
 
 (defn -main [& args]
-      (run-jetty app))
+      (run-jetty app {:port 8080}))

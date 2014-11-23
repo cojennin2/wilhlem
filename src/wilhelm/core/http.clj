@@ -45,7 +45,7 @@
 (defn http-get-simple
       "Make an http get request and return the response body"
       [url params]
-      (http-get-resp-body (get url {:query-params params})))
+      (http-get-resp-body (http-get url {:query-params params})))
 
 (defn http-get-simple-json
       "Make an http get request to a json endpoint,

@@ -21,7 +21,7 @@
 (defn now-playing [offset limit]
       "Fetch movies that are now playing in theaters. Takes a limit
       and an offset."
-      (let [movies (take limit (drop offset (api/now-playing)))]
+      (let [movies (api/now-playing offset limit)]
            (do
              (put-movies-onto-queue movies)
              movies)))

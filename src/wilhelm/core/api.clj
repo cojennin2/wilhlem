@@ -11,13 +11,6 @@
 (def api-cache-time 3600000)
 (def api-default-paged-count 20)
 
-(defn from-offset-page-start [offset]
-      "Take a given offset and turn it into pages."
-      (let [pages (/ offset api-default-paged-count)]
-           (if (<= pages 1)
-             1
-             pages)))
-
 (defn api-request [endpoint params]
       "The basic api http request. Will make http calls to json
       endpoints and return edn."
@@ -56,19 +49,18 @@
       wants to query for information that will be returned as list
       will probably want to use this function. It normalizes a paged
       response into limit/offset using a lazy seq."
-      ([endpoint] (api-call-paged endpoint 1 nil nil))
-      ([endpoint offset] (api-call-paged endpoint offset nil nil))
-      ([endpoint offset params] (api-call-paged endpoint offset params nil))
-      ([endpoint offset params expire]
-        (let [page (from-offset-page-start offset)]
+      ([endpoint] (api-call-paged endpoint nil nil))
+      ([endpoint params] (api-call-paged endpoint nil))
+      ([endpoint params expire]
+        (let [page 1]
              (try
                (concat
                  (get (api-call endpoint (assoc params :page page) expire) "results")
                  (lazy-seq (api-call-paged endpoint (+ page 1) params expire)))
                (catch Exception e (throw e))))))
 
-(defn now-playing []
-      (api-call-paged "movie/now_playing"))
+(defn now-playing [offset limit]
+      (take limit (drop offset (api-call-paged "movie/now_playing"))))
 
 (defn movie-cast [id]
       (get (api-call (str "movie/" id "/credits")) "cast"))
