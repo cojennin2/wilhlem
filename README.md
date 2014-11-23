@@ -87,13 +87,13 @@ This solution is pretty naive. If this application starts taking requests before
 I'm not a huge fan of how exceptions thrown by themoviedb.org are handled. Given that I wanted to keep each part of the application pretty self sustaining, I chose to normalize exception messages thrown when making requests to themoviedb.org. That way we could swap another api and our application would still throw the same error message for the same http status even if the new api had a totally different message (themoviedb.org's 401 message was pretty good, but what if rottentomatoes is not? Or what if it didn't throw a message at all?). I don't think try/catch is very Clojury. I ended up throwing a generic exception from http.clj which I just bubbled up to handler.clj. I figured it was better that http.clj didn't throw an exception that was specific to handler.clj (same with api.clj and movies.clj). I wanted to keep each part of the application as independent from every other part so that if I had more time I could go in and add (or swap) a new api with relative ease.
 
 ### If I had more time
-1) I would have liked to explore using 3rd party software. I think it was an interesting opportunity to work around the problem of not relying on any, but it doesn't really make for a robust or practical application
-2) I would have liked to find more appropriate or practical uses for core.async. I like the pipeline model but it doesn't feel practical in this scenario.
-3) I would have liked to explore [Hystrix](https://github.com/Netflix/Hystrix), a library by Netflix that deals with fault tolerance. I think it might have helped with handling exceptions
-4) I would have liked to explore using different API's to get better data. Sometimes themoviedb.org doesn't have birthday information on the actors. Also it would help with rate limiting to distribute calls to different API's.
-5) I would have liked to build in better querying for movies. What's now playing near your zipcode, in a given state, in a given country.
-6) I would have like to build more options into the frontend. Right now it pulls 20 movies by default (the default number of items the api returns). It would be nice to add a "Load More" to load more movies.
-7) I would have liked to rework some of the offset/limit logic. It was interesting building a lazy seq but I'm not sure how flexible it is (also I end up calling every page starting from page one, so if you're offset is large enough we'll probably have rate limiting problems).
+1. I would have liked to explore using 3rd party software. I think it was an interesting opportunity to work around the problem of not relying on any, but it doesn't really make for a robust or practical application
+2. I would have liked to find more appropriate or practical uses for core.async. I like the pipeline model but it doesn't feel practical in this scenario.
+3. I would have liked to explore [Hystrix](https://github.com/Netflix/Hystrix), a library by Netflix that deals with fault tolerance. I think it might have helped with handling exceptions
+4. I would have liked to explore using different API's to get better data. Sometimes themoviedb.org doesn't have birthday information on the actors. Also it would help with rate limiting to distribute calls to different API's.
+5. I would have liked to build in better querying for movies. What's now playing near your zipcode, in a given state, in a given country.
+6. I would have like to build more options into the frontend. Right now it pulls 20 movies by default (the default number of items the api returns). It would be nice to add a "Load More" to load more movies.
+7. I would have liked to rework some of the offset/limit logic. It was interesting building a lazy seq but I'm not sure how flexible it is (also I end up calling every page starting from page one, so if you're offset is large enough we'll probably have rate limiting problems).
  
 
 ## License
