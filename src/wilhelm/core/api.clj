@@ -18,21 +18,21 @@
              1
              pages)))
 
-(defn http-request [endpoint params]
+(defn api-request [endpoint params]
       "The basic api http request. Will make http calls to json
       endpoints and return edn."
       (try
-        (http/get-simple-json (str api endpoint) params)
+        (http/http-get-simple-json (str api endpoint) params)
         (catch Exception e (throw e))))
 
-(defn http-request-cached [endpoint params expire]
+(defn api-request-cached [endpoint params expire]
       "Calls the basc api http request function and then
       places the response into the cache. Cache keys are based on the
       endpoint being called."
       (let [val (cache/get-cache endpoint)]
            (if (not (nil? val))
              val
-             (let [val (http-request endpoint params)]
+             (let [val (api-request endpoint params)]
                   (let [res (cache/set-cache! endpoint val expire)]
                        res)))))
 
@@ -47,7 +47,7 @@
         (let [params (assoc params :api_key apikey)
               expire (or expire api-cache-time)]
              (try
-               (http-request-cached endpoint params expire)
+               (api-request-cached endpoint params expire)
                (catch Exception e (throw e))))))
 
 ; todo: still not sure if this is the best way to call this. Offset is an argument but limit is optional?

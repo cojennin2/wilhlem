@@ -28,31 +28,31 @@
                         [404] (Exception. text-404)
                         [_] (Exception. text-500))))
 
-(defn get [url options]
+(defn http-get [url options]
       "Make an http get requset. Takes a url and options (mostly params)"
       (try
         (client/get url (assoc options :throw-entire-message? true))
         (catch Exception e (throw-http-exception-message e))))
 
-(defn get-resp-body [resp]
+(defn http-get-resp-body [resp]
       "Get the response body of an http get request"
       (:body resp))
 
-(defn get-resp-code [resp]
+(defn http-get-resp-code [resp]
       "Get the response code of an http get request"
       (:status (resp)))
 
-(defn get-simple
+(defn http-get-simple
       "Make an http get request and return the response body"
       [url params]
-      (get-resp-body (get url {:query-params params})))
+      (http-get-resp-body (get url {:query-params params})))
 
-(defn get-simple-json
+(defn http-get-simple-json
       "Make an http get request to a json endpoint,
       deserialize the response body into edn and return."
       [url params]
       (try
         (->
-          (get-simple url params)
+          (http-get-simple url params)
           (from-json-to-edn))
         (catch Exception e (throw e))))

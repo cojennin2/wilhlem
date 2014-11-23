@@ -7,6 +7,7 @@
                  [ring/ring-defaults "0.1.2"]
                  [ring/ring-json "0.3.1"]
                  [ring-cors "0.1.4"]
+                 [ring/ring-jetty-adapter "1.3.1"]
                  [cheshire "5.3.1"]
                  [clj-http "1.0.1"]
                  [org.clojure/core.cache "0.6.4"]
@@ -14,7 +15,8 @@
                  [org.clojure/core.match "0.2.1"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]]
   :plugins [[lein-ring "0.8.13"]]
-  :ring {:handler wilhelm.core.handler/app}
+  ;:ring {:handler wilhelm.core.handler/app}
+  :main wilhelm.core.handler
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring-mock "0.1.5"]]}})

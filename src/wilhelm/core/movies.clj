@@ -1,6 +1,6 @@
 (ns wilhelm.core.movies
-    (:require [wilhelm.core.api :as api]
-      [wilhelm.core.utils :as utils])
+    (:require [wilhelm.core.api :as api])
+    (:require [wilhelm.core.utils :as utils])
     (:require [clojure.core.async :as async]))
 
 ; A service for movie specific information.

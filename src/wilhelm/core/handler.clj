@@ -1,4 +1,5 @@
 (ns wilhelm.core.handler
+    (:gen-class)
     (:require [compojure.core :refer :all]
       [compojure.handler :as handler]
       [compojure.route :as route])
@@ -6,6 +7,7 @@
       [ring.middleware.json :as json]
       [ring.util.response :only [response]]
       [ring.middleware.cors :refer [wrap-cors]])
+    (:use ring.adapter.jetty)
     (:require [wilhelm.core.movies :as movies]
       [wilhelm.core.cache :as cache]
       [wilhelm.core.utils :as utils]
@@ -39,18 +41,13 @@
            (route/not-found "Not Found"))
 
 (def app
-  (do
-    (->
-      (handler/site app-routes)
-      (exceptional/is-exception?)
-      (log/log-me)
-      (json/wrap-json-body)
-      (json/wrap-json-response)
-      (wrap-cors :access-control-allow-origin #"\*" :access-control-allow-methods [:get :put :post :delete]))))
+  (->
+    (handler/site app-routes)
+    (exceptional/is-exception?)
+    (log/log-me)
+    (json/wrap-json-body)
+    (json/wrap-json-response)
+    (wrap-cors :access-control-allow-origin #"\*" :access-control-allow-methods [:get :put :post :delete])))
 
-(def -main [& args]
-  (do
-    (movies/listen-for-movies)
-    (movies/listen-for-cast-members)
-    (movies/now-playing 0 20))
-  (run-jetty-server app))
+(defn -main [& args]
+      (run-jetty app))
