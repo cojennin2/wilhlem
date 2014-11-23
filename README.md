@@ -74,6 +74,7 @@ Given the constraints, I opted for an in-memory caching solution with a library 
 I talked a little bit about the constraints of rate limiting above. The rate limit constraint (5 calls/sec) is most felt when making calls to get profile information on a given cast member of a given movie. Getting cast member profile information requires getting the credits of a movie and then running through each credit to get the profile. Most movies had a substantial cast (upwards of 15-20) and I ended up quickly hitting the rate limit when trying to make these calls on the fly. The solution I came up with was to use core.async and prime the program cache before starting the web server.
 
 The steps of the solution are as follows:
+
 1. Before the web server boots, make a call to themoviedb.org with to get 20 movies (the default number to retrieve). 
 2. Asynchronously place each movie profile individually on a channel.
 3. A consumer listening on the channel takes each movie profile, makes a call to get the credits of the movie and then places each credit individually on a second channel
@@ -87,6 +88,7 @@ This solution is pretty naive. If this application starts taking requests before
 I'm not a huge fan of how exceptions thrown by themoviedb.org are handled. Given that I wanted to keep each part of the application pretty self sustaining, I chose to normalize exception messages thrown when making requests to themoviedb.org. That way we could swap another api and our application would still throw the same error message for the same http status even if the new api had a totally different message (themoviedb.org's 401 message was pretty good, but what if rottentomatoes is not? Or what if it didn't throw a message at all?). I don't think try/catch is very Clojury. I ended up throwing a generic exception from http.clj which I just bubbled up to handler.clj. I figured it was better that http.clj didn't throw an exception that was specific to handler.clj (same with api.clj and movies.clj). I wanted to keep each part of the application as independent from every other part so that if I had more time I could go in and add (or swap) a new api with relative ease.
 
 ### If I had more time
+
 1. I would have liked to explore using 3rd party software. I think it was an interesting opportunity to work around the problem of not relying on any, but it doesn't really make for a robust or practical application
 2. I would have liked to find more appropriate or practical uses for core.async. I like the pipeline model but it doesn't feel practical in this scenario.
 3. I would have liked to explore [Hystrix](https://github.com/Netflix/Hystrix), a library by Netflix that deals with fault tolerance. I think it might have helped with handling exceptions
