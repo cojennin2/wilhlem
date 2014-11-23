@@ -30,7 +30,7 @@ There's an uberjar already packaged in this repo.
 
 Run the following to start a web server on your local machine on :8080
 
-    $ java -jar build/wilhelm-0.1.0-standalone.jar
+    $ java -jar build/uberjar/wilhelm-0.1.0-standalone.jar
     
 Or, if you built the uberjar from scratch (using the build commands above), run:
 
