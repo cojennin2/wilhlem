@@ -41,6 +41,7 @@ To start a development server, run:
     $ lein ring server
 
 ## When Running
+
 You can visit http://localhost:8080/index.html to get a basic front end that wraps the application
 
 You can visit http://localhost:8080/movies/now-playing to get a list of movies that are currently playing in theaters (takes 2 optional query params: limit and offset)
@@ -50,11 +51,13 @@ You can visit http://localhost:8080/movies/:movieid/cast to get the cast of a mo
 You can visit http://localhost:8080/movies/:movieid/average-age-of-cast to get the average age of the cast of a movie (where :movieid is id of a movie. Same as above). 
     
 ## Project
+
 The purpose of this project is to fetch information about movies playing in theaters this week and the average age of the cast. I used the time on this project as an opportunity to explore Clojure (how to structure a project, using core.async, making and using a lazy sequence, etc). It's not something I would consider "production" ready by any stretch of the imagination (that's a given with the constraints below), but I would consider it a success just given that I finally had a chance to mess around with go blocks.
  
  (Note that this project was inspired by my attendance at Clojure/conj 2014 (11/20 - 11/22). I haven't any serious projects in Clojure but after attending the conj I found this project to be a good opportunity to experiment with the language (I attended with a colleague who runs clojure code in production. I was just attending as an enthusiast).
 
 ### Constraints
+
 1. Rate limiting of API used.
 2. No dependencies on 3rd party software (eg, no database, no caching (memcached, etc))
   
@@ -63,6 +66,7 @@ The first constraint was a trade off. Using one data source [themoviedb.org] (ht
 The second constraint was a personal one. I wanted a user to be able to run this application without having to go through a complex build or setup process. Avoiding dependencies on other software also has significant trade offs. Rate limiting could likely be avoided by persisting data into a database. Managing caching would also be significantly easier with a 3rd party solution (memcached, etc). However, with this constraint I had the opportunity to come up with some interesting (albeit impractical) solutions.
  
 ### Things I found interesting
+
 *Cache*
 Given the constraints, I opted for an in-memory caching solution with a library provided by [core.cache](https://github.com/clojure/core.cache). I opted for using a TTL Cache (expiration seemed like a good idea). What's interesting about core.cache is that it opts for sticking with the inherent idea of immutable and persistent data structures in Clojure. Actions that could be considered mutable in another language (delete, save, etc) instead return an updated data structure representing the cache in it's entirety. Therefore manipulating the cache required the use of [swap!](https://clojuredocs.org/clojure.core/swap!), a Clojure function for atomically swapping values (of atoms. That's why you'll find a number of "@" symbols in cache.clj. It's de-referencing the value of the cache (which is held in an atom). Note that one issue with this caching solution is that all cache is wiped whenever the program is stopped/started.
  
@@ -87,6 +91,9 @@ I'm not a huge fan of how exceptions thrown by themoviedb.org are handled. Given
 2) I would have liked to find more appropriate or practical uses for core.async. I like the pipeline model but it doesn't feel practical in this scenario.
 3) I would have liked to explore [Hystrix](https://github.com/Netflix/Hystrix), a library by Netflix that deals with fault tolerance. I think it might have helped with handling exceptions
 4) I would have liked to explore using different API's to get better data. Sometimes themoviedb.org doesn't have birthday information on the actors. Also it would help with rate limiting to distribute calls to different API's.
+5) I would have liked to build in better querying for movies. What's now playing near your zipcode, in a given state, in a given country.
+6) I would have like to build more options into the frontend. Right now it pulls 20 movies by default (the default number of items the api returns). It would be nice to add a "Load More" to load more movies.
+7) I would have liked to rework some of the offset/limit logic. It was interesting building a lazy seq but I'm not sure how flexible it is (also I end up calling every page starting from page one, so if you're offset is large enough we'll probably have rate limiting problems).
  
 
 ## License

@@ -95,7 +95,7 @@
                                   (do
                                     (async/>! channel-cast (first cast))
                                     (recur (next cast)))))
-                          (async/<! (async/timeout (rand-nth (range 500 1000)))))
+                          (async/<! (async/timeout (rand-nth (range 500 1000))))) ; don't hit the rate limit
                      (recur)))
 
 (defn listen-for-cast-members []
@@ -106,5 +106,5 @@
                      (let [cast-member (async/<! channel-cast)]
                           (do
                             (cast-member-profile cast-member)
-                            (async/<! (async/timeout (rand-nth (range 500 1000))))))
+                            (async/<! (async/timeout (rand-nth (range 500 1000)))))) ; don't hit the rate limit
                      (recur)))
