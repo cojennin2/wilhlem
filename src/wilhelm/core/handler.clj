@@ -54,5 +54,7 @@
 ; we could throw a set timeout to give the caching pipeline more time
 ; to work before server startup.
 (defn -main [& args]
+      (movies/listen-for-movies)
+      (movies/listen-for-cast-members)
       (movies/now-playing 0 20)
       (run-jetty app {:port 8080}))
