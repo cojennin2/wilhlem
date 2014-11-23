@@ -49,5 +49,10 @@
     (json/wrap-json-response)
     (wrap-cors :access-control-allow-origin #"\*" :access-control-allow-methods [:get :put :post :delete])))
 
+; Before we even start our server we can start
+; kicking off our caching pipeline. In fact, if we wanted to
+; we could throw a set timeout to give the caching pipeline more time
+; to work before server startup.
 (defn -main [& args]
+      (movies/now-playing 0 20)
       (run-jetty app {:port 8080}))

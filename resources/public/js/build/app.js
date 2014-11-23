@@ -1,5 +1,5 @@
 var CONFIG = {
-    apiPath: 'http://localhost:3000/'
+    apiPath: 'http://localhost:8080/'
 };
 
 var CastList = React.createClass({displayName: 'CastList',
