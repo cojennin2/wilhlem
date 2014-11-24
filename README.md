@@ -96,6 +96,7 @@ I'm not a huge fan of how exceptions thrown by themoviedb.org are handled. Given
 5. I would have liked to build in better querying for movies. What's now playing near your zipcode, in a given state, in a given country.
 6. I would have like to build more options into the frontend. Right now it pulls 20 movies by default (the default number of items the api returns). It would be nice to add a "Load More" to load more movies.
 7. I would have liked to rework some of the offset/limit logic. It was interesting building a lazy seq but I'm not sure how flexible it is (also I end up calling every page starting from page one, so if you're offset is large enough we'll probably have rate limiting problems).
+8. I would have liked to utilize the REPL more effectively. I saw a talk at Clojure/conj (https://www.youtube.com/watch?v=0GzzFeS5cMc) that involved modifying a game on the fly. I'm not sure how I could have used it for this program, but it would have been interesting to try.
  
 
 ## License
