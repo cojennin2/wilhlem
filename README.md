@@ -52,7 +52,7 @@ You can visit http://localhost:8080/movies/:movieid/average-age-of-cast to get t
     
 ## Project
 
-The purpose of this project is to fetch information about movies playing in theaters this week and the average age of the cast. I used the time on this project as an opportunity to explore Clojure (how to structure a project, using core.async, making and using a lazy sequence, etc). It's not something I would consider "production" ready by any stretch of the imagination (that's a given with the constraints below), but I would consider it a success just given that I finally had a chance to mess around with go blocks.
+The purpose of this project is to fetch information about movies playing in theaters and the average age of the cast. I used the time on this project as an opportunity to explore Clojure (how to structure a project, using core.async, making and using a lazy sequence, etc). It's not something I would consider "production" ready by any stretch of the imagination (that's a given with the constraints below), but I would consider it a success just given that I finally had a chance to mess around with go blocks.
  
  (Note that this project was inspired by my attendance at Clojure/conj 2014 (11/20 - 11/22). I haven't any serious projects in Clojure but after attending the conj I found this project to be a good opportunity to experiment with the language (I attended with a colleague who runs clojure code in production. I was just attending as an enthusiast).
 
