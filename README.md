@@ -46,7 +46,7 @@ You can visit http://localhost:8080/index.html to get a basic front end that wra
 
 You can visit http://localhost:8080/movies/now-playing to get a list of movies that are currently playing in theaters (takes 2 optional query params: limit and offset)
 
-You can visit http://localhost:8080/movies/:movieid/cast to get the cast of a movie (where :movieid is the id of a movie. You can use id's from any movie in themoviedb.org or use one from "/movies/now-playing"
+You can visit http://localhost:8080/movies/:movieid/cast to get the cast of a movie (where :movieid is the id of a movie. You can use id's from any movie in themoviedb.org or use one from "/movies/now-playing")
  
 You can visit http://localhost:8080/movies/:movieid/average-age-of-cast to get the average age of the cast of a movie (where :movieid is id of a movie. Same as above). 
     
@@ -54,7 +54,7 @@ You can visit http://localhost:8080/movies/:movieid/average-age-of-cast to get t
 
 The purpose of this project is to fetch information about movies playing in theaters and the average age of the cast. I used the time on this project as an opportunity to explore Clojure (how to structure a project, using core.async, making and using a lazy sequence, etc). It's not something I would consider "production" ready by any stretch of the imagination (that's a given with the constraints below), but I would consider it a success just given that I finally had a chance to mess around with go blocks.
  
- (Note that this project was inspired by my attendance at Clojure/conj 2014 (11/20 - 11/22). I haven't any serious projects in Clojure but after attending the conj I found this project to be a good opportunity to experiment with the language (I attended with a colleague who runs clojure code in production. I was just attending as an enthusiast).
+ (Note that this project was inspired by my attendance at Clojure/conj 2014 (11/20 - 11/22). I haven't any serious projects in Clojure but after attending the conj I found this project to be a good opportunity to experiment with the language (I attended with a colleague who runs clojure code in production. I was just attending as an enthusiast)).
 
 ### Constraints
 
